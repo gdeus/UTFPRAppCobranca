@@ -1,4 +1,4 @@
-# teste_api_cobranca
+# Aplicativo Cobranças
 
 Aplicativo criado por Gabriel Augusto de Deus, na disciplina de Desenvolvimento de Aplicativos Móveis na UTFPR com a orientação do professor Everton Coimbra de Araújo.
 
