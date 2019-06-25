@@ -6,7 +6,7 @@ Aplicação construída utilizando o Framework Flutter, que utiliza a linguagem 
 Para execução do projeto utilizei a IDE Android Studio. 
 Necessário antes instalar o Flutter em sua plataforma de desenvolvimento, tutorial pode ser visto nesse link: https://medium.com/sysvale/instalando-o-flutter-no-windows-7d19cfdae1b8 
 
-## Rodando o APP: 
+## Executando o APP: 
 
 - Para executar esse projeto você precisa primeiramente instalar o XAMPP em seu computador, no meu caso usei a versão 3.2.3
 
