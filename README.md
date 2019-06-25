@@ -14,6 +14,6 @@ Necessário antes instalar o Flutter em sua plataforma de desenvolvimento, tutor
 
 - Feito isso abra o XAMPP e dê um start nos serviços "Apache" e "MYSQL"
 
-- Abra o link "http:localhost/phpmyadmin", crie seu banco de dados, com o nome “banco_cobranca” e execute o script SQL dentro do banco (arquivo banco_cobranca.sql)
+- Abra o link "http://localhost/phpmyadmin/", crie seu banco de dados, com o nome “banco_cobranca” e execute o script SQL dentro do banco (arquivo banco_cobranca.sql)
 
 - Após isso abra a aplicação onde preferir, baixe as dependências e é só executar em seu celular ou emulador.
