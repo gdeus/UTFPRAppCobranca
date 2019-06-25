@@ -1,16 +1,16 @@
 # teste_api_cobranca
 
-A new Flutter application.
+Aplicativo criado por Gabriel Augusto de Deus, na disciplina de desenvolvimento de aplicativos móveis na UTFPR com a orientação do professor
+Everton Coimbra de Araujo.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+- Para executar esse projeto você precisa primeiramente instalar o XAMPP em seu computador, no meu caso usei a versão 3.2.3
 
-A few resources to get you started if this is your first Flutter project:
+- Após instalar o XAMPP jogar o contéudo da pasta "API-PHP" na pasta "htdocs" na raiz do XAMPP.
 
-- [Lab: Write your first Flutter app](https://flutter.io/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.io/docs/cookbook)
+- Feito isso abra o XAMPP e dê um star nos serviços "Apache" e "MYSQL"
 
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.io/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+- Abra o link "http:localhosto/phpmyadmin" e execute o script do banco (arquivo banco_cobranca.sql)
+
+- Após isso abra a aplicação onde preferir, baixe as dependências e é só executar em seu celular ou emulador.
