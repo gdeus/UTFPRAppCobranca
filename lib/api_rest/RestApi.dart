@@ -170,6 +170,56 @@ class RestApi {
       return dividasUsuario;
     }
 
+  Future<List<Divida>> getAllClienteAtrasado(String user) async {
+    List<Divida> dividasUsuario = [];
+    print("entrei nesse if locasso");
+    http.Response response = await http.post(
+        'http://10.0.2.2/getAllClienteAtrasado.php', body: {
+      "user": user,
+    });
+    var jsonData = json.decode(response.body);
+    print(jsonData.toString());
+
+    for (var u in jsonData) {
+      dividasUsuario.add(new Divida.fromJson(u));
+    }
+
+    print(jsonData.toString());
+
+    if (jsonData.length == 0) {
+      print("Relatórios mil grau");
+    } else {
+      print("Parabéns relatórios funidonando");
+    }
+
+    return dividasUsuario;
+  }
+
+  Future<List<Divida>> getAllClientePago(String user) async {
+    List<Divida> dividasUsuario = [];
+    print("entrei nesse if locasso");
+    http.Response response = await http.post(
+        'http://10.0.2.2/getAllClientePago.php', body: {
+      "user": user,
+    });
+    var jsonData = json.decode(response.body);
+    print(jsonData.toString());
+
+    for (var u in jsonData) {
+      dividasUsuario.add(new Divida.fromJson(u));
+    }
+
+    print(jsonData.toString());
+
+    if (jsonData.length == 0) {
+      print("Relatórios mil grau");
+    } else {
+      print("Parabéns relatórios funidonando");
+    }
+
+    return dividasUsuario;
+  }
+
   Future<List<Divida>> relatorio(String user, String data1, String data2) async {
     List<Divida> usuarioLogado = [];
     print("USUARIO DENTRO DAAPI: " + user);

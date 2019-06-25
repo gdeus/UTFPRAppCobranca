@@ -31,15 +31,16 @@ class _todasDividasState extends State<todasDividas> {
               children: <Widget>[
                 Row(mainAxisAlignment: MainAxisAlignment.center,children: <Widget>[
                   RaisedButton(
-
                     child: Text(
                       "Pagas",
                       style: TextStyle(fontSize: 18.0),
                     ),
                     onPressed: () {
+                      indicador = 2;
                       carregar();
                     },
                   ),
+                  SizedBox(width: 20,),
                   RaisedButton(
                     child: Text(
                       "Atrasadas",
@@ -47,6 +48,17 @@ class _todasDividasState extends State<todasDividas> {
                     ),
                     onPressed: () {
                       indicador = 1;
+                      carregar();
+                    },
+                  ),
+                  SizedBox(width: 20,),
+                  RaisedButton(
+                    child: Text(
+                      "Tudo",
+                      style: TextStyle(fontSize: 18.0),
+                    ),
+                    onPressed: () {
+                      indicador = 0;
                       carregar();
                     },
                   ),
@@ -105,6 +117,9 @@ class _todasDividasState extends State<todasDividas> {
 
   carregar() async {
     if(indicador == 0){
+      setState(() {
+
+      });
       todasAsDividas = await rest.todasAsDividas();
       quantidadeClientes = await todasAsDividas.length;
     }
@@ -121,11 +136,12 @@ class _todasDividasState extends State<todasDividas> {
       setState(() {
 
       });
-      todasAsDividas = await rest.todasAsDividasAtrasadas();
+      todasAsDividas = await rest.todasAsDividasPagas();
       quantidadeClientes = await todasAsDividas.length;
     }
 
   }
+
   double somaDevendo(){
 
     double conversor, somador = 0.0;
