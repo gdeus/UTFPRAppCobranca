@@ -18,8 +18,10 @@ class todasDividas extends StatefulWidget {
 class _todasDividasState extends State<todasDividas> {
   RestApi rest = new RestApi();
   List<Divida> todasAsDividas;
+  List<Usuario> todosOsClientes;
   int quantidadeClientes;
   DateTime dataVcto;
+  int indicador = 0;
   final _pageController = PageController();
 
   @override
@@ -27,6 +29,29 @@ class _todasDividasState extends State<todasDividas> {
     return Scaffold(
             body: Column(
               children: <Widget>[
+                Row(mainAxisAlignment: MainAxisAlignment.center,children: <Widget>[
+                  RaisedButton(
+
+                    child: Text(
+                      "Pagas",
+                      style: TextStyle(fontSize: 18.0),
+                    ),
+                    onPressed: () {
+                      carregar();
+                    },
+                  ),
+                  RaisedButton(
+                    child: Text(
+                      "Atrasadas",
+                      style: TextStyle(fontSize: 18.0),
+                    ),
+                    onPressed: () {
+                      indicador = 1;
+                      carregar();
+                    },
+                  ),
+                ],
+                ),
                 Expanded(
                   child: Container(
                     child: FutureBuilder(
@@ -48,26 +73,24 @@ class _todasDividasState extends State<todasDividas> {
                                       padding: EdgeInsets.only(top: 10.0),
                                       itemCount: quantidadeClientes,
                                       itemBuilder: (context, index) {
-                                        dataVcto = DateTime.parse(
-                                            todasAsDividas[index].data_vcto);
-                                        if (todasAsDividas[index].pago == "0") {
-                                          todasAsDividas[index].pago =
-                                              "Em atraso";
-                                          return CardsVencido(
-                                              todasAsDividas[index]);
-                                        } else if (dataVcto ==
-                                            new DateTime.now()) {
-                                          todasAsDividas[index].pago =
-                                              "Vencimento hoje";
-                                          return CardsVctoDia(
-                                              todasAsDividas[index]);
-                                        } else {
+                                        dataVcto = DateTime.parse(todasAsDividas[index].data_vcto);
+                                        if (todasAsDividas[index].pago == "0" && dataVcto.isBefore(DateTime.now())) {
+                                          todasAsDividas[index].pago = "Em atraso";
+                                          return CardsVencido(todasAsDividas[index]);
+                                        }
+                                        if (todasAsDividas[index].pago == "1"){
                                           todasAsDividas[index].pago = "Pago";
-                                          return CardsPago(
-                                              todasAsDividas[index]);
+                                          return CardsPago(todasAsDividas[index]);
+                                        }
+                                        if (todasAsDividas[index].pago == "0" && dataVcto.isAfter(DateTime.now())){
+                                          todasAsDividas[index].pago = "Há vencer";
+                                          return CardsVctoDia(todasAsDividas[index]);
                                         }
                                       }),
-                                )
+                                ),
+                                Text("Total Inadimplente: R\$" + somaDevendo().toString(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),),
+                                Text("Total Pago: R\$" + somaPagas().toString(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0)),
+                                Text("Saldo : R\$" + (somaPagas() - somaDevendo()).toString(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0))
                               ],
                             );
                         }
@@ -81,8 +104,55 @@ class _todasDividasState extends State<todasDividas> {
   }
 
   carregar() async {
-    todasAsDividas = await rest.todasAsDividas();
-    quantidadeClientes = await todasAsDividas.length;
+    if(indicador == 0){
+      todasAsDividas = await rest.todasAsDividas();
+      quantidadeClientes = await todasAsDividas.length;
+    }
+    if (indicador == 1){
+      setState(() {
+
+      });
+      todasAsDividas = await rest.todasAsDividasAtrasadas();
+      quantidadeClientes = await todasAsDividas.length;
+    }
+
+
+    if (indicador == 2){
+      setState(() {
+
+      });
+      todasAsDividas = await rest.todasAsDividasAtrasadas();
+      quantidadeClientes = await todasAsDividas.length;
+    }
+
+  }
+  double somaDevendo(){
+
+    double conversor, somador = 0.0;
+    int i;
+
+    for(i=0;i<todasAsDividas.length;i++){
+      dataVcto = DateTime.parse(todasAsDividas[i].data_vcto);
+      if(todasAsDividas[i].pago == '0' && dataVcto.isBefore(DateTime.now())){
+        conversor = double.parse(todasAsDividas[i].valor);
+        somador = somador + conversor;
+      }
+    }
+    return somador;
+  }
+
+  double somaPagas(){
+    double conversor, somador = 0.0;
+    int i;
+
+    for(i=0;i<todasAsDividas.length;i++){
+      if(todasAsDividas[i].pago == '1'){
+        conversor = double.parse(todasAsDividas[i].valor);
+        somador = somador + conversor;
+      }
+    }
+
+    return somador;
   }
 
   Widget CardsVencido(Divida divida) {
@@ -111,12 +181,12 @@ class _todasDividasState extends State<todasDividas> {
                 style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),
               ),
               Text(
-                "Parcela: " + divida.parcela,
+                "Cliente: " + divida.nome,
                 style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
               ),
               Text(
-                "Cliente: " + divida.nome,
-                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                "ID da dívida: " + divida.id,
+                style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),
               ),
             ],
           )
@@ -151,8 +221,12 @@ class _todasDividasState extends State<todasDividas> {
                 style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),
               ),
               Text(
-                "Parcela: " + divida.parcela,
-                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                "Cliente: " + divida.nome ,
+                style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),
+              ),
+              Text(
+                "ID da dívida: " + divida.id,
+                style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),
               ),
             ],
           )
@@ -187,8 +261,12 @@ class _todasDividasState extends State<todasDividas> {
                 style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),
               ),
               Text(
-                "Parcela: " + divida.parcela,
-                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                "Cliente: " + divida.nome ,
+                style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),
+              ),
+              Text(
+                "ID da dívida: " + divida.id,
+                style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),
               ),
             ],
           )

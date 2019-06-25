@@ -24,16 +24,18 @@ class _LoginState extends State<Login> {
   List<Usuario> usuarioLogado;
   int i;
 
+
+
   String msg = '';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Login Loja"),
+          title: Text("iCobranças"),
           centerTitle: true,
           actions: <Widget>[
-            FlatButton(
+            /*FlatButton(
               child: Text(
                 "Criar Conta",
                 style: TextStyle(fontSize: 15.0),
@@ -44,13 +46,16 @@ class _LoginState extends State<Login> {
                     MaterialPageRoute(builder: (context)=>CriarContaTela())
                 );*/
               },
-            )
+            )*/
           ],
         ),
         body: Form(
           child: ListView(
             padding: EdgeInsets.all(15.0),
             children: <Widget>[
+              SizedBox(
+                child: Icon(IconData(57895, fontFamily: 'MaterialIcons'),size: 150.0,color: Colors.redAccent,)
+              ),
               TextFormField(
                 controller: usuario,
                 decoration: InputDecoration(hintText: "Usuario"),
@@ -69,7 +74,7 @@ class _LoginState extends State<Login> {
                   if (text.isEmpty || text.length < 6) return "Senha inválida!!";
                 },
               ),
-              Align(
+              /*Align(
                 alignment: Alignment.centerRight,
                 child: FlatButton(
                   onPressed: () {},
@@ -79,7 +84,7 @@ class _LoginState extends State<Login> {
                   ),
                   padding: EdgeInsets.zero,
                 ),
-              ),
+              ),*/
               SizedBox(height: 15.0,),
               RaisedButton(
                 child: Text("Login",

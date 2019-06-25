@@ -55,7 +55,7 @@ class _LojaScreenState extends State<LojaScreen> {
                           default:
                             return Column(
                               children: <Widget>[
-                                Text("Parcelas a receber hoje: "),
+                                Text("Parcelas a receber hoje: ", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25.0),),
                                 Expanded(
                                   child: ListView.builder(
                                       padding: EdgeInsets.only(top: 10.0),
@@ -66,7 +66,7 @@ class _LojaScreenState extends State<LojaScreen> {
                                         return Cards(listDividaVencDia[index]);
                                       }),
                                 ),
-                                Text("Valor total á receber hoje: " + soma.toString()),
+                                Text("Valor total á receber hoje: R\$" + somaVctoDia().toString(), style: TextStyle(fontSize: 30.0),),
                               ],
                             );
                         }
@@ -87,14 +87,6 @@ class _LojaScreenState extends State<LojaScreen> {
         ),
         Scaffold(
           appBar: AppBar(
-            title: Text("Gráficos"),
-            centerTitle: true,
-          ),
-          drawer: CustomDrawer(_pageController),
-          body: todasDividas(user: widget.user),
-        ),
-        Scaffold(
-          appBar: AppBar(
             title: Text("Relatórios"),
             centerTitle: true,
           ),
@@ -106,22 +98,21 @@ class _LojaScreenState extends State<LojaScreen> {
   }
 
   carregar() async {
-    int i;
-    soma = 0.0;
-    print("Estou no carregar");
     listDividaVencDia = await rest.vencimentoNoDia();
     quantidadeClientes = await listDividaVencDia.length;
-    print(quantidadeClientes);
-    if(listDividaVencDia.length != 0) {
-      for (i = 0; i <= listDividaVencDia.length; i++) {
-        convert = double.parse(listDividaVencDia[i].valor);
-        soma = soma + convert;
-        print(soma);
-      }
-    } else {
-      print("para parar de dar erro");
+  }
+
+  double somaVctoDia(){
+    int i;
+    double conversor, soma = 0.0;
+
+    print("Tamanho da lista::::::::::: " + listDividaVencDia.length.toString());
+    for(i=0;i < listDividaVencDia.length;i++){
+      conversor = double.parse(listDividaVencDia[i].valor);
+      soma = soma + conversor;
     }
-    print("passei pelo carregar");
+
+    return soma;
   }
 
   Widget Cards(Divida divida) {
@@ -147,6 +138,14 @@ class _LojaScreenState extends State<LojaScreen> {
               Text(
                 "Parcela: " + divida.parcela,
                 style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+              ),
+              Text(
+                "Cliente: " + divida.nome,
+                style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),
+              ),
+              Text(
+                "ID da dívida: " + divida.id,
+                style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),
               ),
             ],
           )

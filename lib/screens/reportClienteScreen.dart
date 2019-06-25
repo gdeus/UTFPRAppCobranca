@@ -1,27 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:teste_api_cobranca/api_rest/RestApi.dart';
 import 'package:teste_api_cobranca/models/Usuario.dart';
 import 'package:teste_api_cobranca/models/divida.dart';
 import 'package:teste_api_cobranca/screens/geraReportScreen.dart';
-import 'package:teste_api_cobranca/screens/loginScreen.dart';
-import 'dart:async';
-import 'package:autocomplete_textfield/autocomplete_textfield.dart';
-import 'package:intl/intl.dart';
-import 'dart:convert';
 
-import 'package:teste_api_cobranca/widgets/custom_drawer.dart';
+class ReportClienteScreen extends StatefulWidget {
+  final Usuario user;
 
-class ReportScreen extends StatefulWidget {
+  const ReportClienteScreen({@required this.user});
   @override
-  _ReportScreenState createState() => _ReportScreenState();
+  _ReportClienteScreenState createState() => _ReportClienteScreenState();
 }
 
-class _ReportScreenState extends State<ReportScreen> {
-  AutoCompleteTextField searchTextField;
+class _ReportClienteScreenState extends State<ReportClienteScreen> {
+  @override
   TextEditingController cliente = new TextEditingController();
   TextEditingController data1 = new TextEditingController();
   TextEditingController data2 = new TextEditingController();
-  GlobalKey<AutoCompleteTextFieldState<Usuario>> key = new GlobalKey();
   List<Divida> dividasRelatorio;
   DateTime selectedDate = DateTime.now();
   static List<Usuario> listClientes = new List<Usuario>();
@@ -85,33 +81,6 @@ class _ReportScreenState extends State<ReportScreen> {
       child: ListView(
         padding: EdgeInsets.all(15.0),
         children: <Widget>[
-          loading ? CircularProgressIndicator() :
-          searchTextField = AutoCompleteTextField<Usuario>(
-            key: key,
-            clearOnSubmit: false,
-            suggestions: listClientes,
-            style: TextStyle(color: Colors.black, fontSize: 16.0),
-            decoration: InputDecoration(
-              contentPadding: EdgeInsets.fromLTRB(10.0, 30.0, 10.0, 20.0),
-              hintText: "Busque um cliente",
-              hintStyle: TextStyle(color: Colors.black),
-            ),
-            itemFilter: (item, query) {
-              return item.nome.toLowerCase().startsWith(query.toLowerCase());
-            },
-            itemSorter: (a, b) {
-              return a.nome.compareTo(b.nome);
-            },
-            itemSubmitted: (item) {
-              setState(() {
-                searchTextField.textField.controller.text = item.nome + " - " + item.id;
-                cliente.text = item.id;
-              });
-            },
-            itemBuilder: (context, item) {
-              return rowCliente(item);
-            },
-          ),
           SizedBox(
             height: 16.0,
           ),
@@ -134,7 +103,6 @@ class _ReportScreenState extends State<ReportScreen> {
               style: TextStyle(fontSize: 18.0),
             ),
             onPressed: () {
-              print("Valor do controlador : " + searchTextField.textField.controller.text);
               print("Valor do controlador : " + cliente.text);
               gerarRelatorio();
               //Navigator.pop(context);
@@ -150,11 +118,22 @@ class _ReportScreenState extends State<ReportScreen> {
 
   gerarRelatorio() async {
     print("entrei no gerarelatorio  ");
-    dividasRelatorio = await rest.relatorio(cliente.text, data, sdata2);
+    print("Data 1: " + data + "Data 2: " + sdata2);
+    print("ATENÇÃO ESSE É O ID DO TESTE: -------------" + widget.user.id);
+    dividasRelatorio = await rest.relatorio(widget.user.id, data, sdata2);
     if (dividasRelatorio.length == 0) {
       _showDialog();
     } else {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => GeraRelatorioScreen(dividasRelatorio, "Teste", eDate1, eDate2)),);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => GeraRelatorioScreen(
+              dividasRelatorio,
+              widget.user.nome,
+              eDate1,
+              eDate2,
+            )),
+      );
     }
   }
 

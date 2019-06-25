@@ -4,10 +4,10 @@ import 'package:teste_api_cobranca/models/Usuario.dart';
 import 'package:teste_api_cobranca/models/divida.dart';
 
 class RestApi {
-  static final BASE_URL = "http://192.168.1.113/getdata.php";
-  static final GET_ATRASADA = "http://192.168.1.113/getdataatrasada.php";
-  static final GET_DODIA = "http://192.168.1.113/getdatavctodia.php";
-  static final GET_CLIENTES= "http://192.168.1.113/getUsuarios.php";
+  static final BASE_URL = "http://10.0.2.2/getdata.php";
+  static final GET_ATRASADA = "http://10.0.2.2/getdataatrasada.php";
+  static final GET_DODIA = "http://10.0.2.2/getdatavctodia.php";
+  static final GET_CLIENTES= "http://10.0.2.2/getUsuarios.php";
 
 
   Future<List<Divida>> todasAsDividas() async {
@@ -22,6 +22,40 @@ class RestApi {
       }
 
       print("TODAS AS DIVIDAS");
+      print(listDivida.toString());
+      return listDivida;
+    } on Exception catch (_) {}
+  }
+
+  Future<List<Divida>> todasAsDividasAtrasadas() async {
+    List<Divida> listDivida = [];
+    try {
+      http.Response response = await http.get('http://10.0.2.2/getatrasadas.php');
+      var jsonData = json.decode(response.body);
+      print(jsonData.toString());
+
+      for (var u in jsonData) {
+        listDivida.add(new Divida.fromJson(u));
+      }
+
+      print("TODAS AS DIVIDAS ATRASADAS");
+      print(listDivida.toString());
+      return listDivida;
+    } on Exception catch (_) {}
+  }
+
+  Future<List<Divida>> todasAsDividasPagas() async {
+    List<Divida> listDivida = [];
+    try {
+      http.Response response = await http.get('http://10.0.2.2/getPagas.php');
+      var jsonData = json.decode(response.body);
+      print(jsonData.toString());
+
+      for (var u in jsonData) {
+        listDivida.add(new Divida.fromJson(u));
+      }
+
+      print("TODAS AS DIVIDAS ATRASADAS");
       print(listDivida.toString());
       return listDivida;
     } on Exception catch (_) {}
@@ -43,22 +77,29 @@ class RestApi {
     } on Exception catch (_) {}
   }
 
-  Future<List<Divida>> dividasAtrasadas() async {
+  Future<List<Divida>> dividasAtrasadas(String user) async {
     List<Divida> listDividaAtrasadas = [];
-    try {
-      http.Response response = await http.get(GET_ATRASADA);
-      var jsonData = json.decode(response.body);
-      print(jsonData.toString());
+    http.Response response = await http.post(
+        'http://10.0.2.2/getdataatrasada.php', body: {
+        "user": user,
+    });
 
-      for (var u in jsonData) {
-        listDividaAtrasadas.add(new Divida.fromJson(u));
-      }
+    var jsonData = json.decode(response.body);
+    print(jsonData.toString());
 
-      print("ATRASADAS");
-      print(listDividaAtrasadas.toString());
-      return listDividaAtrasadas;
+    for (var u in jsonData) {
+      listDividaAtrasadas.add(new Divida.fromJson(u));
+    }
 
-    } on Exception catch (_) {}
+    print(jsonData.toString());
+
+    if(jsonData.length==0){
+      print("Relatórios mil grau");
+    } else {
+      print("Parabéns relatórios funidonando");
+    }
+
+    return listDividaAtrasadas;
   }
 
   Future<List<Divida>> vencimentoNoDia() async {
@@ -80,7 +121,7 @@ class RestApi {
 
   Future<List<Usuario>> login(String user, String senha) async {
     List<Usuario> usuarioLogado = [];
-    http.Response response = await http.post('http://192.168.1.113/login.php', body: {
+    http.Response response = await http.post('http://10.0.2.2/login.php', body: {
       "user": user,
       "senha": senha,
     });
@@ -103,31 +144,83 @@ class RestApi {
     return usuarioLogado;
   }
 
+
+  Future<List<Divida>> getAllCliente(String user) async {
+    List<Divida> dividasUsuario = [];
+      print("entrei nesse if locasso");
+      http.Response response = await http.post(
+          'http://10.0.2.2/getAllCliente.php', body: {
+        "user": user,
+      });
+      var jsonData = json.decode(response.body);
+      print(jsonData.toString());
+
+      for (var u in jsonData) {
+        dividasUsuario.add(new Divida.fromJson(u));
+      }
+
+      print(jsonData.toString());
+
+      if (jsonData.length == 0) {
+        print("Relatórios mil grau");
+      } else {
+        print("Parabéns relatórios funidonando");
+      }
+
+      return dividasUsuario;
+    }
+
   Future<List<Divida>> relatorio(String user, String data1, String data2) async {
     List<Divida> usuarioLogado = [];
-    http.Response response = await http.post('http://192.168.1.113/relatorio.php', body: {
-      "user": user,
-      "data1": data1,
-      "data2": data2,
-    });
-    print(data1);
-    print(data2);
+    print("USUARIO DENTRO DAAPI: " + user);
+    if(user != "") {
+      print("entrei nesse if locasso");
+      http.Response response = await http.post(
+          'http://10.0.2.2/relatorio.php', body: {
+        "user": user,
+        "data1": data1,
+        "data2": data2,
+      });
+      var jsonData = json.decode(response.body);
+      print(jsonData.toString());
 
-    var jsonData = json.decode(response.body);
-    print(jsonData.toString());
+      for (var u in jsonData) {
+        usuarioLogado.add(new Divida.fromJson(u));
+      }
 
-    for (var u in jsonData) {
-      usuarioLogado.add(new Divida.fromJson(u));
-    }
+      print(jsonData.toString());
 
-    print(jsonData.toString());
+      if(jsonData.length==0){
+        print("Relatórios mil grau");
+      } else {
+        print("Parabéns relatórios funidonando");
+      }
 
-    if(jsonData.length==0){
-      print("Relatórios mil grau");
+      return usuarioLogado;
     } else {
-      print("Parabéns relatórios funidonando");
+      http.Response response = await http.post(
+          'http://10.0.2.2/relatorioSemCliente.php', body: {
+        "data1": data1,
+        "data2": data2,
+      });
+      var jsonData = json.decode(response.body);
+      print(jsonData.toString());
+
+      for (var u in jsonData) {
+        usuarioLogado.add(new Divida.fromJson(u));
+      }
+
+      print(jsonData.toString());
+
+      if(jsonData.length==0){
+        print("Relatórios mil grau");
+      } else {
+        print("Parabéns relatórios funidonando");
+      }
+
+      return usuarioLogado;
     }
 
-    return usuarioLogado;
+
   }
 }

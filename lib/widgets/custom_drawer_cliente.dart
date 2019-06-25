@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:teste_api_cobranca/models/Usuario.dart';
 import 'package:teste_api_cobranca/widgets/drawer_tile.dart';
 
-class CustomDrawer extends StatelessWidget {
+class CustomDrawerCliente extends StatelessWidget {
   final PageController pageController;
 
-  CustomDrawer(this.pageController);
+  CustomDrawerCliente(this.pageController);
 
   @override
   Widget build(BuildContext context) {
